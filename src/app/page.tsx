@@ -1,25 +1,24 @@
 'use client'
 
-import { Button, Flex, Heading, Input, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Box, Heading, useColorMode, useColorModeValue, Button, Flex, useMediaQuery } from "@chakra-ui/react";
+import SideMenu from "../components/SideMenu";
 
 
-export default function Home() {
-
+export default function Home () {
   const { toggleColorMode } = useColorMode();
-  const forBackGround = useColorModeValue("gray.100", "gray.700");
+  const bg = useColorModeValue("gray.100", "gray.700");
+  const color = useColorModeValue("black", "white");
+  const [isLargerThanThatSize] = useMediaQuery("(min-width: 768px)");
 
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center">
-      
-      <Flex direction="column" background={forBackGround} padding={12} rounded={6}>
-
-      <Heading mb={6}>Log in</Heading>
-      <Input placeholder="sample@sample.com" variant="filled" mb={3} type="email" />
-      <Input placeholder="********" variant="filled" mb={6} type="password" />
-      <Button mb={6} colorScheme="teal">Log in</Button>
-      <Button onClick = {toggleColorMode}>Toggle Color Mode</Button>
-      </Flex>
-      
+    <Flex>
+        <SideMenu toggleColorMode={toggleColorMode} />
+        <Box marginLeft={(isLargerThanThatSize ? "47vw" : "calc(50vw - 75px)")} padding={4} display="flex" alignItems="center" justifyContent="center" height="100vh">
+          <Box textAlign="center">
+            <Heading mb={6}>Hello, World!</Heading>
+            <Button onClick={toggleColorMode}>Toggle Color</Button>
+          </Box>
+        </Box>  
     </Flex>
   )
 }
