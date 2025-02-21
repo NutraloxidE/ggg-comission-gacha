@@ -1,7 +1,7 @@
 'use client'
 
-import { Box, Heading, useColorMode, Button, Flex, useMediaQuery } from "@chakra-ui/react";
-import SideMenu from "../components/SideMenu";
+import { Box, Heading, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";
+import SideMenu from "../../components/SideMenu";
 
 
 export default function Home () {
@@ -13,8 +13,7 @@ export default function Home () {
         <SideMenu toggleColorMode={toggleColorMode} />
         <Box marginLeft={(isLargerThanThatSize ? "47vw" : "calc(50vw - 75px)")} padding={4} display="flex" alignItems="center" justifyContent="center" height="100vh">
           <Box textAlign="center">
-            <Heading mb={6}>Hello, World!</Heading>
-            <Button onClick={toggleColorMode}>Toggle Color</Button>
+            <Heading mb={6}>Comission</Heading>
           </Box>
         </Box>  
     </Flex>

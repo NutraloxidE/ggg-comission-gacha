@@ -1,5 +1,7 @@
 // SideMenu.tsx
-import { Box, VStack, Link, Text, useColorModeValue, Icon, useMediaQuery, Button } from "@chakra-ui/react";
+import { useState, useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Box, VStack, Link, Text, useColorModeValue, Icon, Button } from "@chakra-ui/react";
 import { FaSignInAlt, FaHome, FaPen, FaBell, FaEnvelope, FaLightbulb, FaClipboardList, FaTasks  } from "react-icons/fa";
 
 interface SideMenuProps {
@@ -7,17 +9,31 @@ interface SideMenuProps {
 }
 
 export default function SideMenu({ toggleColorMode }: SideMenuProps) {
+
   const bg = useColorModeValue("gray.100", "gray.700");
   const color = useColorModeValue("black", "white");
   const IconSize = "8";
-  const [isLargerThanThatSize] = useMediaQuery("(min-width: 768px)");
+  const [isLargerThanThatSize, setIsLargerThanThatSize] = useState(false);
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setIsLargerThanThatSize(window.innerWidth >= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const linkProps = {
     display: "flex",
     alignItems: "center",
     marginLeft: "5px",
   };
-
 
   return (
     <Box
@@ -30,11 +46,11 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
       position="fixed"
     >
       <VStack align="start" spacing={6} >
-        <Link href="#home" {...linkProps}>
+        <Link onClick={() => router.push('./')} {...linkProps}>
           <Icon as={FaHome} mr={2} boxSize={IconSize} />
           {isLargerThanThatSize && <Text>ホーム</Text>}
         </Link>
-        <Link href="#create-task" {...linkProps}>
+        <Link onClick={() => router.push('./make-comission')} {...linkProps}>
           <Icon as={FaPen} mr={2} boxSize={IconSize} />
           {isLargerThanThatSize && <Text>依頼をする</Text>}
         </Link>
@@ -57,7 +73,7 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
 
         {/* It will be removed after pull up menu */}
         <Link onClick={toggleColorMode} {...linkProps}>
-          <Icon as={FaLightbulb} mr={2} boxSize={IconSize} />
+          <Icon as={FaLightbulb} mr={2} boxSize={IconSize} /> 
           {isLargerThanThatSize && <Text>Toggle Lightmode</Text>}
         </Link>
       </VStack>
@@ -71,3 +87,4 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
     </Box>
   );
 }
+

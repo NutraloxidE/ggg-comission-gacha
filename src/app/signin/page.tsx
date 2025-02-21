@@ -1,6 +1,5 @@
 'use client'
 
-import SideMenu from "@/components/SideMenu";
 import { Button, Flex, Heading, Input, useColorMode, useColorModeValue } from "@chakra-ui/react";
 
 
