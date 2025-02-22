@@ -46,11 +46,11 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
       position="fixed"
     >
       <VStack align="start" spacing={6} >
-        <Link onClick={() => router.push('./')} {...linkProps}>
+        <Link onClick={() => router.push('/')} {...linkProps}>
           <Icon as={FaHome} mr={2} boxSize={IconSize} />
           {isLargerThanThatSize && <Text>ホーム</Text>}
         </Link>
-        <Link onClick={() => router.push('./make-comission')} {...linkProps}>
+        <Link onClick={() => router.push('/make-comission')} {...linkProps}>
           <Icon as={FaPen} mr={2} boxSize={IconSize} />
           {isLargerThanThatSize && <Text>依頼をする</Text>}
         </Link>
@@ -60,7 +60,7 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
         </Link>
         <Link href="#quest-board" {...linkProps}>
           <Icon as={FaTasks} mr={2} boxSize={IconSize} />
-          {isLargerThanThatSize && <Text>受注中の依頼</Text>}
+          {isLargerThanThatSize && <Text>進行中の依頼</Text>}
         </Link>
         <Link href="#notifications" {...linkProps}>
           <Icon as={FaBell} mr={2} boxSize={IconSize} />

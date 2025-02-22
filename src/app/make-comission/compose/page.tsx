@@ -2,8 +2,8 @@
 
 import { Box, Heading, Button, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import SideMenu from "../../components/SideMenu";
-import { StepsHeader } from "../../components/StepsHeader";
+import SideMenu from "../../../components/SideMenu";
+import { StepsHeader } from "../../../components/StepsHeader";
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -12,15 +12,8 @@ export default function Home () {
 
   const sideMenuWidth = isLargerThanThatSize ? "200px" : "75px";
 
-  const buttons = [
-    { label: "作編曲", route: "/make-comission/compose" },
-    { label: "作詞", route: "/lyrics" },
-    { label: "イラスト", route: "/illustration" },
-    { label: "出演(DJ/LIVE)", route: "/dj-live" }, 
-  ];
-
   const steps = ['種類を選択', '詳細を入力', 'お支払い'];
-  const currentStep = 0;
+  const currentStep = 1;
 
   return (
     <Flex>
@@ -40,14 +33,8 @@ export default function Home () {
           height="calc(100vh - 80px)"
         >
           <Box textAlign="center">
-            <Heading mb={6}>どのようなタイプの依頼を行いたいですか？</Heading>
-            <Flex gap={2} wrap="wrap" justifyContent="center">
-              {buttons.map(({ label, route }) => (
-                <Button key={label} variant="outline" onClick={() => router.push(route)}>
-                  {label}
-                </Button>
-              ))}
-            </Flex>
+            <Heading mb={6}>作曲について、詳細をお聞かせ下さい。</Heading>
+
           </Box>
         </Flex>
       </Box>
