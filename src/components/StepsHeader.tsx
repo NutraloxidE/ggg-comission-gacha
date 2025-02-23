@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Text, Circle, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, Text, Circle, useMediaQuery, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
 interface StepsHeaderProps {
@@ -12,6 +12,7 @@ export const StepsHeader: React.FC<StepsHeaderProps> = ({ steps, currentStep }) 
   // SideMenu.tsx の幅に合わせたマージン
   const leftMargin = isLargerThanThatSize ? "200px" : "75px";
   const router = useRouter();
+  const background = useColorModeValue("white", "gray.800");
 
   // クリックしたステップが現在より前（小さいインデックス）なら、ページを戻る
   const handleStepClick = (index: number) => {
@@ -27,7 +28,9 @@ export const StepsHeader: React.FC<StepsHeaderProps> = ({ steps, currentStep }) 
       left={leftMargin}
       right="0"
       zIndex="1000"
+      bg={background}
       p={4}
+      pr="20px"  // 右側に追加のパディングを設定
       boxShadow="md"
     >
       <Flex align="center" justify="space-between">
