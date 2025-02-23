@@ -68,7 +68,7 @@ export default function Home () {
 
   return (
     <Flex>
-      <SideMenu toggleColorMode={toggleColorMode} />
+      <SideMenu toggleColorMode={toggleColorMode}/>
 
       {/* ヘッダーが固定なので、スクロール可能なコンテンツ領域に上部パディングを追加 */}
       <Box flex="1" ml={sideMenuWidth} overflowY="auto" maxH="100vh" pt="100px">
@@ -87,7 +87,7 @@ export default function Home () {
             </Heading>
 
             {/* 以下、各コンテンツ */}
-            <CommissionAmount amount={commissionAmount} />
+            <CommissionAmount amount={commissionAmount} soundEnabled={true} />
 
             {/* 作曲タイプ選択 */}
             <Box mt={4}>
@@ -145,10 +145,10 @@ export default function Home () {
               </Heading>
               <RadioGroup onChange={setDiscountOption} value={discountOption}>
                 <Stack direction="column">
-                  <Radio value="enterprise">企業 (+50%)</Radio>
+                  <Radio value="enterprise">企業</Radio>
                   <Radio value="none">変更なし</Radio>
-                  <Radio value="doujin">同人 (-33%)</Radio>
-                  <Radio value="student">学割 (-50%)</Radio>
+                  <Radio value="doujin">同人</Radio>
+                  <Radio value="student">学割</Radio>
                 </Stack>
               </RadioGroup>
             </Box>
@@ -168,7 +168,7 @@ export default function Home () {
               <Flex justify="center" gap={6}>
                 <Box
                   as="button"
-                  onClick={() => setChipCount(chipCount - 500)}
+                  onClick={() => setChipCount(Math.max(chipCount - 500, 0))}
                   bg="red.400"
                   borderRadius="full"
                   px={6}
@@ -209,6 +209,21 @@ export default function Home () {
               </Heading>
               <textarea style={{ width: "100%", height: "200px" }} />
             </Box>
+    
+            {/* 依頼金額 */}  
+            <Box mt={6}>
+              <Heading
+                as="h3"
+                size="md"
+                mb={4}
+                borderBottom="2px"
+                borderColor="blue.200"
+                pb={1}
+              >
+                依頼金額
+              </Heading>
+            </Box>
+            <CommissionAmount amount={commissionAmount} soundEnabled={false} />
 
             {/* サブミットボタン仮置き */}
             <Box mt={6}>
