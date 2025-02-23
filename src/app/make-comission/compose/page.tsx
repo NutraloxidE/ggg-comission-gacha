@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import SideMenu from '@/components/SideMenu.client';
 import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
+import { SingleOrder } from "@/app/types/order/SingleOrder";
+import { GroupedOrder, calculateTotalFee } from "@/app/types/order/GroupedOrder";
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -18,7 +20,7 @@ export default function Home () {
   const currentStep = 1;
 
   // 各項目の状態
-  const [commissionAmount, setCommissionAmount] = useState(18980);
+  const [commissionAmount, setCommissionAmount] = useState(19000);
   const [compositionType, setCompositionType] = useState("BGM");
   const [addLyrics, setAddLyrics] = useState(false);
   const [addSing, setAddSing] = useState(false);
@@ -27,28 +29,65 @@ export default function Home () {
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
-    const base = 18980;
-    let extra = 0;
+    const composerOrder : SingleOrder = {
+      id: Date.now()+1,
+      workType: "作曲",
+      orderDetails: "not defined yet",
+      fee: 18980,
+      Deadline: new Date(),
+    };
+
+    let addArranger = false;
+    const arrangerOrder : SingleOrder = {
+      id: Date.now()+2,
+      workType: "編曲",
+      orderDetails: "編曲のみ",
+      fee: 0,
+      Deadline: new Date(),
+    };
+
     switch (compositionType) {
       case "BGM":
-        extra = 0;
+        composerOrder.fee = 19000;
+        composerOrder.orderDetails = "BGM(一分半のループ)";
         break;
       case "フル尺インスト":
-        extra = 12000;
+        composerOrder.fee = 31000;
+        composerOrder.orderDetails = "フル尺インスト";
         break;
       case "作曲のみ(コードとメロのMidi)":
-        extra = 2000;
+        composerOrder.fee = 21000;
+        composerOrder.orderDetails = "作曲のみ (コードとメロのMidi)";
         break;
       case "作編曲":
-        extra = 30000;
+        composerOrder.fee = 21000;
+        composerOrder.orderDetails = "作編曲";
+        addArranger = true;
+        arrangerOrder.fee = 27000;
         break;
       default:
-        extra = 0;
+        composerOrder.fee = 0;
     }
-    const lyricsExtra = addLyrics ? 12000 : 0;
-    const singExtra = addSing ? 9000 : 0;
-    const cost = base + extra + lyricsExtra + chipCount + singExtra;
 
+    // 作詞のオプションが選択されている場合、作詞オーダーを追加
+    const lyricistOrder : SingleOrder = {
+      id: Math.random(),
+      workType: "作詞",
+      orderDetails: "作詞、仮歌",
+      fee: addLyrics ? 12000 : 0,
+      Deadline: new Date(),
+    };
+    
+    // 歌入れのオプションが選択されている場合、歌入れオーダーを追加
+    const singerOrder : SingleOrder = {
+      id: Math.random(),
+      workType: "歌唱",
+      orderDetails: "本番歌唱",
+      fee: addSing ? 9000 : 0,
+      Deadline: new Date(),
+    };
+
+    // ディスカウントオプションに応じて金額を変更
     let discountMultiplier = 1;
     switch(discountOption) {
       case "enterprise":
@@ -66,7 +105,36 @@ export default function Home () {
       default:
         discountMultiplier = 1;
     }
-    setCommissionAmount(Math.floor(cost * discountMultiplier));
+
+    //それぞれのSingleOrderをGroupedOrderにまとめる
+    const orders: SingleOrder[] = [composerOrder];
+    if (addArranger) { orders.push(arrangerOrder); }
+    if (addLyrics) { orders.push(lyricistOrder); }
+    if (addSing) { orders.push(singerOrder); }
+
+    //ディスカウントの適用
+    orders.forEach((order) => {
+      order.fee *= discountMultiplier;
+    });
+
+    //チップを人数で割り、手数料に加算
+    const tipPerPerson = chipCount * discountMultiplier / orders.length;
+    orders.forEach((order) => {
+      order.fee += tipPerPerson;
+    });
+
+    //GroupedOrderを作成
+    const groupedOrder: GroupedOrder = {
+      id: Date.now(),
+      orders: orders,
+      totalFee: 0,
+      overallDeadline: new Date(),
+      isTaxed: false,
+    };
+    groupedOrder.totalFee = calculateTotalFee(groupedOrder);
+    
+    // 依頼金額の再計算、
+    setCommissionAmount(groupedOrder.totalFee);
   }, [compositionType, addLyrics, chipCount, addSing, discountOption]);
 
   return (
