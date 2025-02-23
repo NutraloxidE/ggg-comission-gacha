@@ -18,7 +18,7 @@ export default function Home () {
   const currentStep = 1;
 
   // 各項目の状態
-  const [commissionAmount, setCommissionAmount] = useState(18000);
+  const [commissionAmount, setCommissionAmount] = useState(18980);
   const [compositionType, setCompositionType] = useState("BGM");
   const [addLyrics, setAddLyrics] = useState(false);
   const [addSing, setAddSing] = useState(false);
@@ -27,20 +27,20 @@ export default function Home () {
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
-    const base = 18000;
+    const base = 18980;
     let extra = 0;
     switch (compositionType) {
       case "BGM":
         extra = 0;
         break;
-      case "インスト":
+      case "フル尺インスト":
         extra = 12000;
         break;
-      case "作曲のみ":
+      case "作曲のみ(コードとメロのMidi)":
         extra = 2000;
         break;
       case "作編曲":
-        extra = 32000;
+        extra = 30000;
         break;
       default:
         extra = 0;
@@ -52,13 +52,16 @@ export default function Home () {
     let discountMultiplier = 1;
     switch(discountOption) {
       case "enterprise":
-        discountMultiplier = 1.5;
+        discountMultiplier = 1.8;
+        break;
+      case "imrich":
+        discountMultiplier = 1.35;
         break;
       case "doujin":
-        discountMultiplier = 0.67;
+        discountMultiplier = 0.90;
         break;
       case "student":
-        discountMultiplier = 0.5;
+        discountMultiplier = 0.70;
         break;
       default:
         discountMultiplier = 1;
@@ -83,7 +86,7 @@ export default function Home () {
         >
           <Box textAlign="center">
             <Heading mb={6} borderBottom="2px" borderColor="blue.200" >
-              作曲について、詳細をお聞かせ下さい
+              作曲について、詳細をお聞かせ下さい。
             </Heading>
 
             {/* 以下、各コンテンツ */}
@@ -104,8 +107,8 @@ export default function Home () {
               <RadioGroup onChange={setCompositionType} value={compositionType}>
                 <Stack direction="column">
                   <Radio value="BGM">BGM(一分半のループ)</Radio>
-                  <Radio value="インスト">フル尺インスト</Radio>
-                  <Radio value="作曲のみ">作曲のみ (コードとメロのMidi)</Radio>
+                  <Radio value="フル尺インスト">フル尺インスト</Radio>
+                  <Radio value="作曲のみ(コードとメロのMidi)">作曲のみ (コードとメロのMidi)</Radio>
                   <Radio value="作編曲">作編曲</Radio>
                 </Stack>
               </RadioGroup>
@@ -141,14 +144,15 @@ export default function Home () {
                 borderColor="blue.200" 
                 pb={1}
               >
-                ディスカウントを選択
+                ディスカウント・追加インセンティブを選択
               </Heading>
               <RadioGroup onChange={setDiscountOption} value={discountOption}>
                 <Stack direction="column">
                   <Radio value="enterprise">企業</Radio>
+                  <Radio value="imrich">私はお金を持っています(めっちゃやる気出る)</Radio>
                   <Radio value="none">変更なし</Radio>
-                  <Radio value="doujin">同人</Radio>
-                  <Radio value="student">学割</Radio>
+                  <Radio value="doujin">同人(私はお金がありません)</Radio>
+                  <Radio value="student">学割 (21歳まで、在学中に限る)</Radio>
                 </Stack>
               </RadioGroup>
             </Box>
@@ -163,7 +167,7 @@ export default function Home () {
                 borderColor="blue.200" 
                 pb={1}
               >
-                チップを下さい、やる気が出ます
+                チップを下さい、やる気が出ます。
               </Heading>
               <Flex justify="center" gap={6}>
                 <Box
@@ -192,6 +196,19 @@ export default function Home () {
                 >
                   <Text color="white" fontWeight="bold">+500 チップ</Text>
                 </Box>
+                <Box
+                  as="button"
+                  onClick={() => setChipCount(chipCount + 1000)}
+                  bg="green.400"
+                  borderRadius="full"
+                  px={6}
+                  py={3}
+                  shadow="md"
+                  transition="all 0.2s"
+                  _hover={{ bg: "green.500", transform: "scale(1.1)" }}
+                >
+                  <Text color="white" fontWeight="bold">+1000 チップ</Text>
+                </Box>
               </Flex>
             </Box>
 
@@ -207,7 +224,7 @@ export default function Home () {
               >
                 備考・詳細
               </Heading>
-              <textarea style={{ width: "100%", height: "200px" }} />
+              <textarea style={{ width: "100%", height: "200px" } } placeholder="ジャンル、リファレンス、希望の展開等。" />
             </Box>
     
             {/* 依頼金額 */}  
@@ -227,7 +244,7 @@ export default function Home () {
 
             {/* サブミットボタン仮置き */}
             <Box mt={6}>
-              <Button colorScheme="blue" onClick={() => router.push("/make-comission/compose/payment")}>
+              <Button colorScheme="blue" onClick={() => router.push("/make-comission/payment-and-confirm")}>
                 この内容で依頼する
               </Button>
             </Box>
