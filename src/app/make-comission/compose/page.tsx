@@ -68,7 +68,9 @@ export default function Home () {
 
   return (
     <Flex>
+      {/*
       <SideMenu toggleColorMode={toggleColorMode}/>
+      */}
 
       {/* ヘッダーが固定なので、スクロール可能なコンテンツ領域に上部パディングを追加 */}
       <Box flex="1" ml={sideMenuWidth} overflowY="auto" maxH="100vh" pt="100px">

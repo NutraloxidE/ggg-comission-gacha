@@ -24,7 +24,9 @@ export default function Home () {
 
   return (
     <Flex>
+      {/*
       <SideMenu toggleColorMode={toggleColorMode} />
+      */} 
 
       {/* SideMenu の隣に配置するコンテンツ領域 */}
       <Box flex="1" ml={sideMenuWidth}>
