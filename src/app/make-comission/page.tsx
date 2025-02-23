@@ -2,7 +2,7 @@
 
 import { Box, Heading, Button, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import SideMenu from "../../components/SideMenu";
+import SideMenu from '@/components/SideMenu.client';
 import { StepsHeader } from "../../components/StepsHeader";
 
 export default function Home () {

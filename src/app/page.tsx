@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Heading, useColorMode, Button, Flex, useMediaQuery } from "@chakra-ui/react";
-import SideMenu from "../components/SideMenu";
+import SideMenu from '@/components/SideMenu.client';
 
 
 export default function Home () {

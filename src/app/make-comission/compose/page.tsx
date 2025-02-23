@@ -3,7 +3,7 @@
 import { Box, Button, Heading, useColorMode, Flex, useMediaQuery, RadioGroup, Radio, Stack, Checkbox, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import SideMenu from "../../../components/SideMenu";
+import SideMenu from '@/components/SideMenu.client';
 import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
 
