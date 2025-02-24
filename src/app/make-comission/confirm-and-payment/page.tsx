@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * めっちゃ
+ * つくりかけです
+ * 注意、ほぼ機能してない
+ * 
+ * 2024/02/24 R1cefarm
+ */
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Box, Heading, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";

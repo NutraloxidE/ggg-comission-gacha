@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, Heading, useColorMode, Flex, useMediaQuery, RadioGroup, Radio, Stack, Checkbox, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, useColorMode, Flex, useMediaQuery, RadioGroup, Radio, Stack, Checkbox, Text, Textarea } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import SideMenu from '@/components/SideMenu.client';
@@ -8,6 +8,7 @@ import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
 import { SingleOrder } from "@/app/types/order/SingleOrder";
 import { GroupedOrder } from "@/app/types/order/GroupedOrder";
+import OrderReceiptSimple from "../../../components/OrderReceiptSimple";
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -26,6 +27,7 @@ export default function Home () {
   const [addSing, setAddSing] = useState<boolean>(false);
   const [chipCount, setChipCount] = useState<number>(0);
   const [discountOption, setDiscountOption] = useState<string>("none"); // "enterprise", "none", "doujin", "student"
+  const [remarks, setRemarks] = useState<string>(""); // 備考・詳細の状態
   const [groupedOrder, setGroupedOrder] = useState<GroupedOrder | null>(null);
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
@@ -60,7 +62,7 @@ export default function Home () {
     orders.push(composerOrder);
 
     if (addArranger) {
-      const arrangerOrder = new SingleOrder("編曲", "編曲のみ", 27000, new Date());
+      const arrangerOrder = new SingleOrder("編曲", "作曲者と編曲者が別の場合編曲のみ", 27000, new Date());
       orders.push(arrangerOrder);
     }
 
@@ -105,10 +107,10 @@ export default function Home () {
     });
 
     // GroupedOrderを作成
-    const newGroupedOrder = new GroupedOrder(orders, "作曲", "詳細", new Date());
+    const newGroupedOrder = new GroupedOrder(orders, "作曲", remarks, new Date());
     setGroupedOrder(newGroupedOrder);
     setCommissionAmount(newGroupedOrder.totalFeeThatClientPays);
-  }, [compositionType, addLyrics, chipCount, addSing, discountOption]);
+  }, [compositionType, addLyrics, chipCount, addSing, discountOption, remarks]);
 
   const handleSubmit = () => {
     if (groupedOrder) {
@@ -133,6 +135,13 @@ export default function Home () {
           minH="calc(100vh - 100px)"
         >
           <Box textAlign="center">
+
+            {groupedOrder ? (
+              <OrderReceiptSimple groupedOrder={groupedOrder} />
+            ) : (
+              <Heading>Loading...</Heading>
+            )}
+
             <Heading mb={6} borderBottom="2px" borderColor="blue.200" >
               作曲について、詳細をお聞かせ下さい。
             </Heading>
@@ -272,7 +281,12 @@ export default function Home () {
               >
                 備考・詳細
               </Heading>
-              <textarea style={{ width: "100%", height: "200px" } } placeholder="ジャンル、リファレンス、希望の展開等。" />
+              <Textarea 
+                style={{ width: "100%", height: "200px" }} 
+                placeholder="ジャンル、リファレンス、希望の展開等。" 
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+              />
             </Box>
     
             {/* 依頼金額 */}  
