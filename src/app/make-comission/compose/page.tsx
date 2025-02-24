@@ -26,6 +26,7 @@ export default function Home () {
   const [addSing, setAddSing] = useState<boolean>(false);
   const [chipCount, setChipCount] = useState<number>(0);
   const [discountOption, setDiscountOption] = useState<string>("none"); // "enterprise", "none", "doujin", "student"
+  const [groupedOrder, setGroupedOrder] = useState<GroupedOrder | null>(null);
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
@@ -104,9 +105,17 @@ export default function Home () {
     });
 
     // GroupedOrderを作成
-    const groupedOrder = new GroupedOrder(orders, "作曲", "詳細", new Date());
-    setCommissionAmount(groupedOrder.totalFeeThatClientPays);
+    const newGroupedOrder = new GroupedOrder(orders, "作曲", "詳細", new Date());
+    setGroupedOrder(newGroupedOrder);
+    setCommissionAmount(newGroupedOrder.totalFeeThatClientPays);
   }, [compositionType, addLyrics, chipCount, addSing, discountOption]);
+
+  const handleSubmit = () => {
+    if (groupedOrder) {
+      const groupedOrderString = JSON.stringify(groupedOrder);
+      router.push(`/make-comission/confirm-and-payment?groupedOrder=${encodeURIComponent(groupedOrderString)}`);
+    }
+  };
 
   return (
     <Flex>
@@ -283,7 +292,7 @@ export default function Home () {
 
             {/* サブミットボタン仮置き */}
             <Box mt={6}>
-              <Button colorScheme="blue" onClick={() => router.push("/make-comission/confirm-and-payment")}>
+              <Button colorScheme="blue" onClick={handleSubmit}>
                 依頼の最終確認
               </Button>
             </Box>

@@ -12,6 +12,7 @@ export class GroupedOrder {
   comissionCuedDate: Date;
   comissionExpireDate: Date;
   overallDeadline: Date;
+  didClientPay: boolean = false;
   didSomeoneTakeThisOrder: boolean = false;
 
   constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
