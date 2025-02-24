@@ -283,8 +283,8 @@ export default function Home () {
 
             {/* サブミットボタン仮置き */}
             <Box mt={6}>
-              <Button colorScheme="blue" onClick={() => router.push("/make-comission/payment-and-confirm")}>
-                この内容で依頼する
+              <Button colorScheme="blue" onClick={() => router.push("/make-comission/confirm-and-payment")}>
+                依頼の最終確認
               </Button>
             </Box>
 
