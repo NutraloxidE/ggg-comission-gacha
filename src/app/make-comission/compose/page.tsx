@@ -8,6 +8,7 @@ import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
 import { SingleOrder } from "@/app/types/order/SingleOrder";
 import { GroupedOrder, calculateTotalFee } from "@/app/types/order/GroupedOrder";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -20,17 +21,17 @@ export default function Home () {
   const currentStep = 1;
 
   // 各項目の状態
-  const [commissionAmount, setCommissionAmount] = useState(19000);
-  const [compositionType, setCompositionType] = useState("BGM");
-  const [addLyrics, setAddLyrics] = useState(false);
-  const [addSing, setAddSing] = useState(false);
-  const [chipCount, setChipCount] = useState(0);
-  const [discountOption, setDiscountOption] = useState("none"); // "enterprise", "none", "doujin", "student"
+  const [commissionAmount, setCommissionAmount] = useState<number>(19000);
+  const [compositionType, setCompositionType] = useState<string>("BGM");
+  const [addLyrics, setAddLyrics] = useState<boolean>(false);
+  const [addSing, setAddSing] = useState<boolean>(false);
+  const [chipCount, setChipCount] = useState<number>(0);
+  const [discountOption, setDiscountOption] = useState<string>("none"); // "enterprise", "none", "doujin", "student"
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
     const composerOrder : SingleOrder = {
-      id: Date.now()+1,
+      id: uuidv4(),
       workType: "作曲",
       orderDetails: "not defined yet",
       fee: 18980,
@@ -39,7 +40,7 @@ export default function Home () {
 
     let addArranger = false;
     const arrangerOrder : SingleOrder = {
-      id: Date.now()+2,
+      id: uuidv4(),
       workType: "編曲",
       orderDetails: "編曲のみ",
       fee: 0,
@@ -71,7 +72,7 @@ export default function Home () {
 
     // 作詞のオプションが選択されている場合、作詞オーダーを追加
     const lyricistOrder : SingleOrder = {
-      id: Math.random(),
+      id: uuidv4(),
       workType: "作詞",
       orderDetails: "作詞、仮歌",
       fee: addLyrics ? 12000 : 0,
@@ -80,7 +81,7 @@ export default function Home () {
     
     // 歌入れのオプションが選択されている場合、歌入れオーダーを追加
     const singerOrder : SingleOrder = {
-      id: Math.random(),
+      id: uuidv4(),
       workType: "歌唱",
       orderDetails: "本番歌唱",
       fee: addSing ? 9000 : 0,
@@ -125,13 +126,16 @@ export default function Home () {
 
     //GroupedOrderを作成
     const groupedOrder: GroupedOrder = {
-      id: Date.now(),
+      id: uuidv4(),
       orders: orders,
       totalFee: 0,
       overallDeadline: new Date(),
       isTaxed: false,
     };
     groupedOrder.totalFee = calculateTotalFee(groupedOrder);
+
+    //payment and confirmedに渡した後、そのページで仕事を登録する前に、getTaxedGroupedOrderを手数料を引いた金額に変更する
+
     
     // 依頼金額の再計算、
     setCommissionAmount(groupedOrder.totalFee);

@@ -1,8 +1,8 @@
 import { SingleOrder } from './SingleOrder';
-import {SERVICE_FEE_PERCENTAGE, WORKER_TAKE_PERCENTAGE} from "@/app/config/constants";
+import {WORKER_TAKE_PERCENTAGE} from "@/app/config/constants";
 
 export interface GroupedOrder {
-  id: number;
+  id: string;
   orders: SingleOrder[];
   totalFee: number;
   overallDeadline: Date;

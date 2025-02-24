@@ -1,5 +1,5 @@
 export interface SingleOrder {
-  id: number;
+  id: string;
   workType: string;        
   orderDetails: string;    
   fee: number;
