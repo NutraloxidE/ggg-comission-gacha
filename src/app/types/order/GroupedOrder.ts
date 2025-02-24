@@ -1,25 +1,39 @@
 import { SingleOrder } from './SingleOrder';
-import {WORKER_TAKE_PERCENTAGE} from "@/app/config/constants";
+import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
+import { v4 as uuidv4 } from 'uuid';
 
-export interface GroupedOrder {
+export class GroupedOrder {
   id: string;
   orders: SingleOrder[];
-  totalFee: number;
+  orderType: string;
+  orderDetails: string;
+  totalFeeThatClientPays: number;
+  totalRewardForWorker: number;
+  comissionCuedDate: Date;
+  comissionExpireDate: Date;
   overallDeadline: Date;
-  isTaxed: boolean;
-}
+  didSomeoneTakeThisOrder: boolean = false;
 
-export function getTaxedGroupedOrder(groupedOrder: GroupedOrder): GroupedOrder {
-  if (groupedOrder.isTaxed) { return groupedOrder; }
+  constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
+    this.id = uuidv4();
+    this.orders = orders;
+    this.orderType = orderType;
+    this.orderDetails = orderDetails;
+    this.totalFeeThatClientPays = this.calculateTotalFee();
+    this.totalRewardForWorker = this.totalFeeThatClientPays * WORKER_TAKE_PERCENTAGE;
+    this.comissionCuedDate = new Date();
+    this.comissionExpireDate = comissionExpireDate || this.calculateExpireDate(14); // 14日後をデフォルトに設定
+    this.overallDeadline = overallDeadline;
+  }
 
-  const taxedTotalFee = groupedOrder.totalFee * WORKER_TAKE_PERCENTAGE;
-  return {
-    ...groupedOrder,
-    totalFee: taxedTotalFee,
-    isTaxed: true,
-  };
-}
+  calculateTotalFee(): number {
+    return this.orders.reduce((total, order) => total + order.totalFeeThatClientPays, 0);
+  }
 
-export function calculateTotalFee(groupedOrder: GroupedOrder): number {
-  return groupedOrder.orders.reduce((total, order) => total + order.fee, 0);
+  private calculateExpireDate(days: number): Date {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+
 }

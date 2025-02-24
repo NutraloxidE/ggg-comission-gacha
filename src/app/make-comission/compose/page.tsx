@@ -7,8 +7,7 @@ import SideMenu from '@/components/SideMenu.client';
 import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
 import { SingleOrder } from "@/app/types/order/SingleOrder";
-import { GroupedOrder, calculateTotalFee } from "@/app/types/order/GroupedOrder";
-import { v4 as uuidv4 } from 'uuid';
+import { GroupedOrder} from "@/app/types/order/GroupedOrder";
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
