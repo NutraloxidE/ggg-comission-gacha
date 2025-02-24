@@ -7,7 +7,7 @@ import SideMenu from '@/components/SideMenu.client';
 import { StepsHeader } from "../../../components/StepsHeader";
 import { CommissionAmount } from "../../../components/CommissionAmount";
 import { SingleOrder } from "@/app/types/order/SingleOrder";
-import { GroupedOrder} from "@/app/types/order/GroupedOrder";
+import { GroupedOrder } from "@/app/types/order/GroupedOrder";
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -29,63 +29,49 @@ export default function Home () {
 
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
-    const composerOrder : SingleOrder = {
-      id: uuidv4(),
-      workType: "作曲",
-      orderDetails: "not defined yet",
-      fee: 18980,
-      Deadline: new Date(),
-    };
+    const orders: SingleOrder[] = [];
 
+    const composerOrder = new SingleOrder("作曲", "not defined yet", 18980, new Date());
     let addArranger = false;
-    const arrangerOrder : SingleOrder = {
-      id: uuidv4(),
-      workType: "編曲",
-      orderDetails: "編曲のみ",
-      fee: 0,
-      Deadline: new Date(),
-    };
 
     switch (compositionType) {
       case "BGM":
-        composerOrder.fee = 19000;
+        composerOrder.totalFeeThatClientPays = 19000;
         composerOrder.orderDetails = "BGM(一分半のループ)";
         break;
       case "フル尺インスト":
-        composerOrder.fee = 31000;
+        composerOrder.totalFeeThatClientPays = 31000;
         composerOrder.orderDetails = "フル尺インスト";
         break;
       case "作曲のみ(コードとメロのMidi)":
-        composerOrder.fee = 21000;
+        composerOrder.totalFeeThatClientPays = 21000;
         composerOrder.orderDetails = "作曲のみ (コードとメロのMidi)";
         break;
       case "作編曲":
-        composerOrder.fee = 21000;
+        composerOrder.totalFeeThatClientPays = 21000;
         composerOrder.orderDetails = "作編曲";
         addArranger = true;
-        arrangerOrder.fee = 27000;
         break;
       default:
-        composerOrder.fee = 0;
+        composerOrder.totalFeeThatClientPays = 0;
     }
 
-    // 作詞のオプションが選択されている場合、作詞オーダーを追加
-    const lyricistOrder : SingleOrder = {
-      id: uuidv4(),
-      workType: "作詞",
-      orderDetails: "作詞、仮歌",
-      fee: addLyrics ? 12000 : 0,
-      Deadline: new Date(),
-    };
-    
-    // 歌入れのオプションが選択されている場合、歌入れオーダーを追加
-    const singerOrder : SingleOrder = {
-      id: uuidv4(),
-      workType: "歌唱",
-      orderDetails: "本番歌唱",
-      fee: addSing ? 9000 : 0,
-      Deadline: new Date(),
-    };
+    orders.push(composerOrder);
+
+    if (addArranger) {
+      const arrangerOrder = new SingleOrder("編曲", "編曲のみ", 27000, new Date());
+      orders.push(arrangerOrder);
+    }
+
+    if (addLyrics) {
+      const lyricistOrder = new SingleOrder("作詞", "作詞、仮歌", 12000, new Date());
+      orders.push(lyricistOrder);
+    }
+
+    if (addSing) {
+      const singerOrder = new SingleOrder("歌唱", "本番歌唱", 9000, new Date());
+      orders.push(singerOrder);
+    }
 
     // ディスカウントオプションに応じて金額を変更
     let discountMultiplier = 1;
@@ -106,38 +92,20 @@ export default function Home () {
         discountMultiplier = 1;
     }
 
-    //それぞれのSingleOrderをGroupedOrderにまとめる
-    const orders: SingleOrder[] = [composerOrder];
-    if (addArranger) { orders.push(arrangerOrder); }
-    if (addLyrics) { orders.push(lyricistOrder); }
-    if (addSing) { orders.push(singerOrder); }
-
-    //ディスカウントの適用
+    // ディスカウントの適用
     orders.forEach((order) => {
-      order.fee *= discountMultiplier;
+      order.totalFeeThatClientPays *= discountMultiplier;
     });
 
-    //チップを人数で割り、手数料に加算
+    // チップを人数で割り、手数料に加算
     const tipPerPerson = chipCount * discountMultiplier / orders.length;
     orders.forEach((order) => {
-      order.fee += tipPerPerson;
+      order.totalFeeThatClientPays += tipPerPerson;
     });
 
-    //GroupedOrderを作成
-    const groupedOrder: GroupedOrder = {
-      id: uuidv4(),
-      orders: orders,
-      totalFee: 0,
-      overallDeadline: new Date(),
-      isTaxed: false,
-    };
-    groupedOrder.totalFee = calculateTotalFee(groupedOrder);
-
-    //payment and confirmedに渡した後、そのページで仕事を登録する前に、getTaxedGroupedOrderを手数料を引いた金額に変更する
-
-    
-    // 依頼金額の再計算、
-    setCommissionAmount(groupedOrder.totalFee);
+    // GroupedOrderを作成
+    const groupedOrder = new GroupedOrder(orders, "作曲", "詳細", new Date());
+    setCommissionAmount(groupedOrder.totalFeeThatClientPays);
   }, [compositionType, addLyrics, chipCount, addSing, discountOption]);
 
   return (
@@ -201,7 +169,7 @@ export default function Home () {
                 作詞(歌入れが無い場合は仮歌つき)
               </Checkbox>
               <Checkbox mr="4" isChecked={addSing} onChange={(e) => setAddSing(e.target.checked)}>
-                歌入れ
+                歌唱(本番歌唱, Edit, Mixつき)
               </Checkbox>
             </Box>
 
