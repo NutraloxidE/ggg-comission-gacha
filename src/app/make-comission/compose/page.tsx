@@ -30,6 +30,14 @@ export default function Home () {
   const [remarks, setRemarks] = useState<string>(""); // 備考・詳細の状態
   const [groupedOrder, setGroupedOrder] = useState<GroupedOrder | null>(null);
 
+  // 作曲タイプが変更されたら、作詞オプションと歌唱オプションを無効化
+  useEffect(() => {
+    if (compositionType !== "作曲のみ" && compositionType !== "作編曲") {
+      setAddLyrics(false);
+      setAddSing(false);
+    }
+  }, [compositionType]);
+
   // 作曲タイプ、作詞オプション、チップ量、ディスカウントの変更に応じて依頼金額を再計算
   useEffect(() => {
     const orders: SingleOrder[] = [];
@@ -42,11 +50,15 @@ export default function Home () {
         composerOrder.totalFeeThatClientPays = 19000;
         composerOrder.orderDetails = "BGM(一分半のループ)";
         break;
+      case "ビート":
+        composerOrder.totalFeeThatClientPays = 19000;
+        composerOrder.orderDetails = "ラップ用ビート";
+        break;
       case "フル尺インスト":
         composerOrder.totalFeeThatClientPays = 31000;
         composerOrder.orderDetails = "フル尺インスト";
         break;
-      case "作曲のみ(コードとメロのMidi)":
+      case "作曲のみ":
         composerOrder.totalFeeThatClientPays = 21000;
         composerOrder.orderDetails = "作曲のみ (コードとメロのMidi)";
         break;
@@ -59,9 +71,12 @@ export default function Home () {
         composerOrder.totalFeeThatClientPays = 0;
     }
 
-    orders.push(composerOrder);
+    const composerOrderPos = orders.push(composerOrder);
+    const composerOrderIndex = composerOrderPos - 1;
 
     if (addArranger) {
+      orders[composerOrderIndex].workType = "作曲";
+      orders[composerOrderIndex].orderDetails = "編曲者が別でいる場合作曲のみ (コードとメロのMidi)";
       const arrangerOrder = new SingleOrder("編曲", "作曲者と編曲者が別の場合編曲のみ", 27000, new Date());
       orders.push(arrangerOrder);
     }
@@ -107,13 +122,19 @@ export default function Home () {
     });
 
     // GroupedOrderを作成
-    const newGroupedOrder = new GroupedOrder(orders, "作曲", remarks, new Date());
+    const whatIsThisJobType = orders[0].workType;
+    const newGroupedOrder = new GroupedOrder(orders, whatIsThisJobType, "not assigned yet", new Date());
     setGroupedOrder(newGroupedOrder);
     setCommissionAmount(newGroupedOrder.totalFeeThatClientPays);
-  }, [compositionType, addLyrics, chipCount, addSing, discountOption, remarks]);
+  }, [compositionType, addLyrics, chipCount, addSing, discountOption]);
+
+
 
   const handleSubmit = () => {
     if (groupedOrder) {
+
+      groupedOrder.orderDetails = remarks;
+
       const groupedOrderString = JSON.stringify(groupedOrder);
       router.push(`/make-comission/confirm-and-payment?groupedOrder=${encodeURIComponent(groupedOrderString)}`);
     }
@@ -136,6 +157,7 @@ export default function Home () {
         >
           <Box textAlign="center">
 
+            
             {groupedOrder ? (
               <OrderReceiptSimple groupedOrder={groupedOrder} />
             ) : (
@@ -145,6 +167,7 @@ export default function Home () {
             <Heading mb={6} borderBottom="2px" borderColor="blue.200" >
               作曲について、詳細をお聞かせ下さい。
             </Heading>
+            
 
             {/* 以下、各コンテンツ */}
             <CommissionAmount amount={commissionAmount} soundEnabled={true} />
@@ -164,8 +187,9 @@ export default function Home () {
               <RadioGroup onChange={setCompositionType} value={compositionType}>
                 <Stack direction="column">
                   <Radio value="BGM">BGM(一分半のループ)</Radio>
+                  <Radio value="ビート">ラップ用ビート</Radio>
                   <Radio value="フル尺インスト">フル尺インスト</Radio>
-                  <Radio value="作曲のみ(コードとメロのMidi)">作曲のみ (コードとメロのMidi)</Radio>
+                  <Radio value="作曲のみ">作曲のみ (コードとメロのMidi)</Radio>
                   <Radio value="作編曲">作編曲</Radio>
                 </Stack>
               </RadioGroup>
@@ -183,10 +207,20 @@ export default function Home () {
               >
                 オプションを選択
               </Heading>
-              <Checkbox mr="4" isChecked={addLyrics} onChange={(e) => setAddLyrics(e.target.checked)}>
+              <Checkbox 
+                mr="4" 
+                isChecked={addLyrics} 
+                onChange={(e) => setAddLyrics(e.target.checked)}
+                disabled={compositionType !== "作曲のみ" && compositionType !== "作編曲"}
+              >
                 作詞(歌入れが無い場合は仮歌つき)
               </Checkbox>
-              <Checkbox mr="4" isChecked={addSing} onChange={(e) => setAddSing(e.target.checked)}>
+              <Checkbox 
+                mr="4" 
+                isChecked={addSing} 
+                onChange={(e) => setAddSing(e.target.checked)}
+                disabled={compositionType !== "作曲のみ" && compositionType !== "作編曲"}
+              >
                 歌唱(本番歌唱, Edit, Mixつき)
               </Checkbox>
             </Box>

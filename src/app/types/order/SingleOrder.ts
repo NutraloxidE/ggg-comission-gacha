@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
 
 export class SingleOrder {
-  id: string = uuidv4();
+  id: string;
   workType: string;        
   orderDetails: string;    
   totalFeeThatClientPays: number;
@@ -10,6 +9,7 @@ export class SingleOrder {
   Deadline: Date;
 
   constructor(workType: string, orderDetails: string, totalFeeThatClientPays: number, Deadline: Date) {
+    this.id = "this will be assigned by parent object";
     this.workType = workType;
     this.orderDetails = orderDetails;
     this.totalFeeThatClientPays = totalFeeThatClientPays;

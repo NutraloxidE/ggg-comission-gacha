@@ -25,6 +25,10 @@ export class GroupedOrder {
     this.comissionCuedDate = new Date();
     this.comissionExpireDate = comissionExpireDate || this.calculateExpireDate(14); // 14日後をデフォルトに設定
     this.overallDeadline = overallDeadline;
+
+    for (let i = 0; i < orders.length; i++) {
+      orders[i].id = this.id + "-" + i;
+    }
   }
 
   calculateTotalFee(): number {
