@@ -15,7 +15,6 @@ import SideMenu from '../../../components/SideMenu.client';
 import { StepsHeader } from '../../../components/StepsHeader';
 import OrderReceiptSimple from '../../../components/OrderReceiptSimple';
 import { GroupedOrder } from '@/app/types/order/GroupedOrder';
-import { OrderReceiptSimpleProps } from '../../../components/OrderReceiptSimple';
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
@@ -40,7 +39,7 @@ export default function Home () {
           parsedGroupedOrder.overallDeadline = new Date(parsedGroupedOrder.overallDeadline);
           // 入力の検証とサニタイズ
           if (validateGroupedOrder(parsedGroupedOrder)) {
-            setGroupedOrder(parsedGroupedOrder);
+            sendGroupedOrder(parsedGroupedOrder);
           } else {
             console.error('Invalid groupedOrder data');
           }
@@ -55,6 +54,29 @@ export default function Home () {
     // ここでgroupedOrderの検証ロジックを実装
     // 例: 必須フィールドのチェック、データ型のチェックなど
     return true;
+  };
+
+  const sendGroupedOrder = async (groupedOrder: GroupedOrder) => {
+    try {
+      const response = await fetch('/api/process-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(groupedOrder),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const processedGroupOrder = await response.json();
+      // overallDeadlineをDateオブジェクトに変換
+      processedGroupOrder.overallDeadline = new Date(processedGroupOrder.overallDeadline);
+      setGroupedOrder(processedGroupOrder);
+    } catch (error) {
+      console.error('Failed to send groupedOrder', error);
+    }
   };
 
   return (
@@ -73,7 +95,6 @@ export default function Home () {
           {groupedOrder && <OrderReceiptSimple groupedOrder={groupedOrder} />}
         </Flex>
       </Box>
-
     </Flex>
   )
 }

@@ -1,6 +1,5 @@
 import { SingleOrder } from './SingleOrder';
 import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
-import { v4 as uuidv4 } from 'uuid';
 
 export class GroupedOrder {
   id: string;
@@ -9,14 +8,14 @@ export class GroupedOrder {
   orderDetails: string;
   totalFeeThatClientPays: number;
   totalRewardForWorker: number;
-  comissionCuedDate: Date;
+  comissionCuedDate: Date | null;
   comissionExpireDate: Date;
   overallDeadline: Date;
   didClientPay: boolean = false;
   didSomeoneTakeThisOrder: boolean = false;
 
   constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
-    this.id = uuidv4();
+    this.id = "NotAssignedYet";
     this.orders = orders;
     this.orderType = orderType;
     this.orderDetails = orderDetails;

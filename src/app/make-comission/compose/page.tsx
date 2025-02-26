@@ -52,7 +52,7 @@ export default function Home () {
         break;
       case "ビート":
         composerOrder.totalFeeThatClientPays = 19000;
-        composerOrder.orderDetails = "ラップ用ビート";
+        composerOrder.orderDetails = "ラップ用ビート、一分半程度でループするように。";
         break;
       case "フル尺インスト":
         composerOrder.totalFeeThatClientPays = 31000;
@@ -157,12 +157,13 @@ export default function Home () {
         >
           <Box textAlign="center">
 
-            
+            {/*
             {groupedOrder ? (
               <OrderReceiptSimple groupedOrder={groupedOrder} />
             ) : (
               <Heading>Loading...</Heading>
             )}
+            */}
 
             <Heading mb={6} borderBottom="2px" borderColor="blue.200" >
               作曲について、詳細をお聞かせ下さい。
@@ -317,7 +318,7 @@ export default function Home () {
               </Heading>
               <Textarea 
                 style={{ width: "100%", height: "200px" }} 
-                placeholder="ジャンル、リファレンス、希望の展開等。" 
+                placeholder="ジャンル、リファレンス、希望の展開等を入力してください、もし何も入力されない場合、クリエイターが自由に作ります。" 
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
               />

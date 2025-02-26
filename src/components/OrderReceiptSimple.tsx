@@ -53,7 +53,7 @@ const OrderReceiptSimple: React.FC<OrderReceiptSimpleProps> = ({ groupedOrder })
           <Text as="span" textDecoration="underline" textDecorationThickness="1px" textUnderlineOffset="5px">{totalAmount.toLocaleString()}円</Text>
         </Heading>
         <Text color="gray.500" fontSize="sm">注文ID:{groupedOrder.id}</Text>
-        <Text color="gray.500" fontSize="sm">※小数点が表示されますが、問題ありません。</Text>
+        <Text color="gray.500" fontSize="sm">※小数点が表示される事がありますが、問題ありません。</Text>
       </Box>
     </Box>
   );
