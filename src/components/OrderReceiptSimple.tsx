@@ -18,15 +18,17 @@ const OrderReceiptSimple: React.FC<OrderReceiptSimpleProps> = ({ groupedOrder })
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">
-      <Heading mb={6} borderBottom="2px" borderColor="blue.200">
-        注文の確認
-      </Heading>
+      <Box textAlign="center">
+        <Heading mb={6} borderBottom="2px" borderColor="blue.200">
+          注文の確認
+        </Heading>
+      </Box>
       <Box mb={8}>
         {groupedOrder.orders.map((order, index) => (
           <Box key={index} mb={0} p={0}>
             <Text>
               <Text as="span" fontWeight="bold">作業内容:</Text> {order.workType} / 
-              <Text as="span" fontWeight="bold"> 料金:</Text> {order.totalFeeThatClientPays.toFixed(1)}円
+              <Text as="span" fontWeight="bold"> 料金 :</Text> {order.totalFeeThatClientPays.toLocaleString()}円
             </Text>
           </Box>
         ))}
@@ -48,7 +50,7 @@ const OrderReceiptSimple: React.FC<OrderReceiptSimpleProps> = ({ groupedOrder })
       <Box mt={4}>
         <Heading size="lg" mb={2}>合計金額</Heading>
         <Heading size="md" mb={2}>
-          <Text as="span" textDecoration="underline" textDecorationThickness="1px" textUnderlineOffset="5px">{totalAmount.toFixed(1)}円</Text>
+          <Text as="span" textDecoration="underline" textDecorationThickness="1px" textUnderlineOffset="5px">{totalAmount.toLocaleString()}円</Text>
         </Heading>
         <Text color="gray.500" fontSize="sm">注文ID:{groupedOrder.id}</Text>
         <Text color="gray.500" fontSize="sm">※小数点が表示されますが、問題ありません。</Text>
