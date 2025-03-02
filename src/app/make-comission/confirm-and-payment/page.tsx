@@ -8,9 +8,8 @@
  * 2024/02/24 R1cefarm
  */
 
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Box, Heading, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";
+import { Box, useColorMode, Flex, useMediaQuery } from "@chakra-ui/react";
 import SideMenu from '../../../components/SideMenu.client';
 import { StepsHeader } from '../../../components/StepsHeader';
 import OrderReceiptSimple from '../../../components/OrderReceiptSimple';
@@ -53,7 +52,7 @@ export default function Home () {
   const validateGroupedOrder = (data) => {
     // ここでgroupedOrderの検証ロジックを実装
     // 例: 必須フィールドのチェック、データ型のチェックなど
-    return true;
+    return false;
   };
 
   const sendGroupedOrder = async (groupedOrder: GroupedOrder) => {
