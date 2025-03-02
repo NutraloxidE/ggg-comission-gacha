@@ -52,7 +52,7 @@ export default function Home () {
   const validateGroupedOrder = (data) => {
     // ここでgroupedOrderの検証ロジックを実装
     // 例: 必須フィールドのチェック、データ型のチェックなど
-    return false;
+    return true;
   };
 
   const sendGroupedOrder = async (groupedOrder: GroupedOrder) => {

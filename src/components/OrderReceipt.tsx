@@ -16,7 +16,7 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({ groupedOrder }) => {
       <Text>依頼詳細: {groupedOrder.orderDetails}</Text>
       <Text>合計金額: {groupedOrder.totalFeeThatClientPays}</Text>
       <Text>報酬金額: {groupedOrder.totalRewardForWorker}</Text>
-      <Text>依頼日: {groupedOrder.comissionCuedDate.toString()}</Text>
+      <Text>依頼日: {groupedOrder.comissionCuedDate ? groupedOrder.comissionCuedDate.toString() : "N/A"}</Text>
       <Text>期限日: {groupedOrder.comissionExpireDate.toString()}</Text>
       <Text>全体の締め切り: {groupedOrder.overallDeadline.toString()}</Text>
       <Text>依頼を受けたか: {groupedOrder.didSomeoneTakeThisOrder ? "はい" : "いいえ"}</Text>
