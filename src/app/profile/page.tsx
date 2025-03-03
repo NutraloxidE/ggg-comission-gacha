@@ -17,7 +17,9 @@ import {
   HStack,
   IconButton,
   Text,
-  useToast
+  useToast,
+  Spinner,
+  Center
 } from "@chakra-ui/react";
 import { FaCamera } from "react-icons/fa";
 import SideMenu from '@/components/SideMenu.client';
@@ -37,26 +39,61 @@ export default function Home() {
     email: "",
     website: "",
     twitter: "",
-    instagram: ""
+    instagram: "",
+    balance: 0 // 所有金額を追加
   });
 
   const [profileImage, setProfileImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
-  // セッションが利用可能になったらプロフィールを初期化
+  // セッションが利用可能になったらデータベースからプロフィールを取得
   useEffect(() => {
-    if (session?.user) {
-      setProfile(prev => ({
-        ...prev,
-        name: session.user.name || "",
-        email: session.user.email || ""
-      }));
-      // プロフィール画像がある場合は設定
-      if (session.user.image) {
-        setProfileImage(session.user.image);
+    async function fetchProfile() {
+      if (!session?.user) return;
+      
+      try {
+        setIsFetching(true);
+        const response = await fetch('/api/profile');
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'プロフィールの取得に失敗しました');
+        }
+        
+        const profileData = await response.json();
+        
+        // プロフィール情報を設定
+        setProfile({
+          name: profileData.name || "",
+          email: profileData.email || "",
+          bio: profileData.bio || "",
+          website: profileData.website || "",
+          twitter: profileData.twitter || "",
+          instagram: profileData.instagram || "",
+          balance: profileData.balance || 0 // 所有金額を設定
+        });
+        
+        // プロフィール画像があれば設定
+        if (profileData.image) {
+          setProfileImage(profileData.image);
+        }
+      } catch (error) {
+        console.error('プロフィール取得エラー:', error);
+        toast({
+          title: "プロフィールの取得に失敗しました",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } finally {
+        setIsFetching(false);
       }
     }
-  }, [session]);
+    
+    fetchProfile();
+  }, [session, toast]);
 
   // 画像アップロードのハンドラー
   const handleImageUpload = (e) => {
@@ -76,8 +113,22 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      // ここでAPIを呼び出してプロフィール情報を更新
-      // const response = await fetch('/api/profile/update', { ... });
+      // APIを呼び出してプロフィール情報を更新
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...profile,
+          image: profileImage
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'プロフィールの更新に失敗しました');
+      }
 
       toast({
         title: "プロフィールを更新しました",
@@ -86,6 +137,7 @@ export default function Home() {
         isClosable: true,
       });
     } catch (error) {
+      console.error('プロフィール更新エラー:', error);
       toast({
         title: "エラーが発生しました",
         description: error.message,
@@ -106,10 +158,24 @@ export default function Home() {
     }));
   };
 
+  if (isFetching) {
+    return (
+      <Flex>
+        <SideMenu toggleColorMode={toggleColorMode} />
+        <Box flex="1" ml={sideMenuWidth} overflowY="auto" maxH="100vh">
+          <Center h="100vh">
+            <Spinner size="xl" thickness="4px" color="blue.500" />
+          </Center>
+        </Box>
+      </Flex>
+    );
+  }
+
   return (
     <Flex>
       <SideMenu toggleColorMode={toggleColorMode} />
       <Box flex="1" ml={sideMenuWidth} overflowY="auto" maxH="100vh" pt="50px">
+        {/* 残りのUIコード（変更なし） */}
         <Flex 
           padding={6} 
           alignItems="center" 
@@ -130,6 +196,7 @@ export default function Home() {
             </Heading>
 
             <form onSubmit={handleSubmit}>
+              {/* 元のフォームコード（変更なし） */}
               <VStack spacing={6} align="start">
                 {/* プロフィール画像 */}
                 <FormControl>
@@ -164,6 +231,7 @@ export default function Home() {
                   </HStack>
                 </FormControl>
 
+                {/* 残りのフォーム要素は同じ */}
                 {/* ユーザー名 */}
                 <FormControl isRequired>
                   <FormLabel>ユーザー名</FormLabel>
