@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
 
   // groupedOrderの処理を行う
   const processedGroupOrder = processGroupedOrder(groupedOrder);
-
   return NextResponse.json(processedGroupOrder);
 }
 
@@ -21,9 +20,8 @@ const processGroupedOrder = (groupedOrder: GroupedOrder): GroupedOrder => {
   // 例: 合計金額の計算、注文IDの検証など
   groupedOrder.orderID = uuidv7();
   groupedOrder.didClientPay = false; // 改変を無視
-  groupedOrder.didSomeoneTakeThisOrder = false;
 
-  // TODO:決済が処理されるまで、processedGroupedOrderを一時コレクションに保存する (MongoDB)
+  // TODO:決済が処理されるまで、processedGroupedOrderを一時コレクションに保存する (MongoDB) (PaymentPendingGroupedOrders)
   // 決済が完了したら、コレクションから移動し、依頼リストのコレクションに保存する
   
   return groupedOrder as GroupedOrder;

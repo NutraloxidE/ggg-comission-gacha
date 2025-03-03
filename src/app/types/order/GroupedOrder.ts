@@ -4,6 +4,7 @@ import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
 export class GroupedOrder {
   orderID: string; 
   orders: SingleOrder[];
+  clientID?: string;
   orderType: string;
   orderDetails: string;
   totalFeeThatClientPays: number;
@@ -12,7 +13,6 @@ export class GroupedOrder {
   comissionExpireDate: Date;
   overallDeadline: Date;
   didClientPay: boolean = false;
-  didSomeoneTakeThisOrder: boolean = false;
 
   constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
     this.orderID = "NotAssignedYet";// APIでサーバー側で設定
@@ -29,6 +29,12 @@ export class GroupedOrder {
     for (let i = 0; i < orders.length; i++) {
       orders[i].id = this.orderID + "-" + i;
     }
+  }
+
+  //check didSomeoneTakeThisOrder
+  // すべてのオーダーがNotAssignedYetでない場合、trueを返す
+  get didSomeoneTakeThisOrder(): boolean {
+    return this.orders.some(order => order.workerPublicUserID !== "NotAssignedYet");
   }
 
   calculateTotalFee(): number {
