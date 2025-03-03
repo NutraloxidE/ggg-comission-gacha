@@ -11,4 +11,12 @@ declare module "next-auth" {
       sub?: string | null; // subプロパティを追加
     };
   }
+  
+  // MongoDBから取得されるユーザーの型
+  interface User {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  }
 }

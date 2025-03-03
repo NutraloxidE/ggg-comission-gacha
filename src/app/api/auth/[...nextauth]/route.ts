@@ -1,33 +1,40 @@
 import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/app/lib/mongodb";
+import { Session } from "next-auth";
+import { AdapterUser } from "@auth/core/adapters";
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
+  adapter: MongoDBAdapter(clientPromise),
   pages: {
     signIn: "/signin",
   },
   callbacks: {
-    async session({ session, token }) {
-      // セッションにユーザー情報を追加
-      if (token && session.user) {
-        session.user.sub = token.sub;
+    async session({ 
+      session, 
+      user 
+    }: { 
+      session: Session; 
+      user: AdapterUser;
+    }) {
+      // MongoDBアダプタを使うとtokenではなくuserが渡される
+      if (session.user) {
+        session.user.id = user.id;
+        // MongoDB ObjectIdをString型に変換
+        session.user.sub = user.id;
       }
       return session;
     },
-    async jwt({ token, user }) {
-      // JWTにユーザー情報を追加
-      if (user) {
-        token.id = user.id;
-        token.sub = user.sub;
-      }
-      return token;
-    },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
