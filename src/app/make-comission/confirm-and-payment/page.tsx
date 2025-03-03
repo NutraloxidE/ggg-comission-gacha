@@ -14,17 +14,17 @@ import SideMenu from '../../../components/SideMenu.client';
 import { StepsHeader } from '../../../components/StepsHeader';
 import OrderReceiptSimple from '../../../components/OrderReceiptSimple';
 import { GroupedOrder } from '@/app/types/order/GroupedOrder';
+import { useSession } from "next-auth/react"; // 追加
 
 export default function Home () {
   const { toggleColorMode } = useColorMode();
   const [isLargerThanThatSize] = useMediaQuery("(min-width: 768px)");
-
   const sideMenuWidth = isLargerThanThatSize ? "200px" : "75px";
-
   const steps = ['種類を選択', '詳細を入力', 'お支払い'];
   const currentStep = 2;
 
   const [groupedOrder, setGroupedOrder] = useState<GroupedOrder | null>(null);
+  const { data: session } = useSession(); // 追加
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -90,7 +90,20 @@ export default function Home () {
           alignItems="center"
           justifyContent="center"
           minH="calc(100vh - 100px)"
-        >
+          direction="column"
+        > 
+          {/* ユーザー情報の表示 */}
+            {session?.user ? (
+            <div>
+              ユーザーネーム: {session.user.name}<br />
+              ユーザーID: {session.user.id}<br />
+              メールアドレス: {session.user.email}<br />
+              サブジェクトID: {session.user.sub}
+            </div>
+            ) : (
+            <div>ログインしていません</div>
+          )}
+
           {groupedOrder && <OrderReceiptSimple groupedOrder={groupedOrder} />}
         </Flex>
       </Box>

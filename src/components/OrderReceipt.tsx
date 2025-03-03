@@ -11,7 +11,7 @@ const OrderReceipt: React.FC<OrderReceiptProps> = ({ groupedOrder }) => {
       <Heading mb={6} borderBottom="2px" borderColor="blue.200">
         注文の確認
       </Heading>
-      <Text>依頼ID: {groupedOrder.id}</Text>
+      <Text>依頼ID: {groupedOrder.orderID}</Text>
       <Text>依頼タイプ: {groupedOrder.orderType}</Text>
       <Text>依頼詳細: {groupedOrder.orderDetails}</Text>
       <Text>合計金額: {groupedOrder.totalFeeThatClientPays}</Text>

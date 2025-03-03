@@ -2,7 +2,7 @@ import { SingleOrder } from './SingleOrder';
 import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
 
 export class GroupedOrder {
-  id: string;
+  orderID: string; 
   orders: SingleOrder[];
   orderType: string;
   orderDetails: string;
@@ -15,7 +15,7 @@ export class GroupedOrder {
   didSomeoneTakeThisOrder: boolean = false;
 
   constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
-    this.id = "NotAssignedYet";
+    this.orderID = "NotAssignedYet";// APIでサーバー側で設定
     this.orders = orders;
     this.orderType = orderType;
     this.orderDetails = orderDetails;
@@ -25,8 +25,9 @@ export class GroupedOrder {
     this.comissionExpireDate = comissionExpireDate || this.calculateExpireDate(14); // 14日後をデフォルトに設定
     this.overallDeadline = overallDeadline;
 
+    //SingleOrderのIDは、グループID-連番 で設定
     for (let i = 0; i < orders.length; i++) {
-      orders[i].id = this.id + "-" + i;
+      orders[i].id = this.orderID + "-" + i;
     }
   }
 

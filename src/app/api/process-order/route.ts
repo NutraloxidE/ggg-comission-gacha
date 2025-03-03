@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GroupedOrder } from '@/app/types/order/GroupedOrder';
-import { v4 as uuidv4 } from 'uuid';
+import { v7 as uuidv7 } from 'uuid';
 
 
 /*
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 const processGroupedOrder = (groupedOrder: GroupedOrder): GroupedOrder => {
   // groupedOrderの処理ロジックを実装
   // 例: 合計金額の計算、注文IDの検証など
-  groupedOrder.id = uuidv4();
+  groupedOrder.orderID = uuidv7();
   groupedOrder.didClientPay = false; // 改変を無視
   groupedOrder.didSomeoneTakeThisOrder = false;
 
