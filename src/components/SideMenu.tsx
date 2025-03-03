@@ -91,15 +91,23 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
           {isLargerThanThatSize && <Text>Toggle Lightmode</Text>}
         </Link>
       </VStack>
-
+      
+      {/* 左下のユーザーログイン情報、ログインしていない時はログアウトボタンを表示 */}
       <Box position="fixed" bottom={0} p={4} ml={isLargerThanThatSize ? "0" : "-20px"} width={isLargerThanThatSize ? "180px" : "60px"}>
         {session ? (
           <Flex direction={isLargerThanThatSize ? "column" : "column"} alignItems="center" gap={2}>
             <Avatar 
+              onClick={() => router.push('/profile')}
               ml={isLargerThanThatSize ? "0" : "5"}
               size={isLargerThanThatSize ? "md" : "sm"} 
               src={session.user?.image || undefined} 
               name={session.user?.name || "ユーザー"} 
+              cursor="pointer"
+              _hover={{
+                transform: "scale(1.05)",
+                boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.2s ease"
+              }}
             />
             {isLargerThanThatSize && (
               <Text fontSize="sm" fontWeight="bold" textAlign="center" noOfLines={1}>
