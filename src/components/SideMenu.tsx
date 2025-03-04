@@ -93,7 +93,7 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
       </VStack>
       
       {/* 左下のユーザーログイン情報、ログインしていない時はログアウトボタンを表示 */}
-      <Box position="fixed" bottom={0} p={4} ml={isLargerThanThatSize ? "0" : "-20px"} width={isLargerThanThatSize ? "180px" : "60px"}>
+      <Box position="fixed" bottom={0} p={4} ml={isLargerThanThatSize ? "-8px" : "-20px"} width={isLargerThanThatSize ? "180px" : "60px"}>
         {session ? (
           <Flex direction={isLargerThanThatSize ? "column" : "column"} alignItems="center" gap={2}>
             <Avatar 
