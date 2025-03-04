@@ -28,6 +28,23 @@ import { useSession } from "next-auth/react";
 // サイドメニューコンポーネントをメモ化
 const MemoizedSideMenu = memo(SideMenu);
 
+// プロフィールフォームコンポーネントのpropsの型を定義
+interface ProfileFormProps {
+  profile: {
+    name: string;
+    email: string;
+    bio: string;
+    website: string;
+    twitter: string;
+    instagram: string;
+  };
+  profileImage: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isLoading: boolean;
+}
+
 // プロフィールフォームコンポーネントを分離
 const ProfileForm = memo(({ 
   profile, 
@@ -36,12 +53,12 @@ const ProfileForm = memo(({
   handleImageUpload, 
   handleSubmit, 
   isLoading 
-}) => {
+}: ProfileFormProps) => {
   // フォーカス状態を追跡するための参照
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // フォーカスイベントハンドラー
-  const handleFocus = useCallback((e) => {
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLFormElement>) => {
     // フォーカスイベントをここで処理し、バブリングを止める
     e.stopPropagation();
   }, []);
@@ -167,7 +184,7 @@ const ProfileForm = memo(({
 ProfileForm.displayName = "ProfileForm";
 
 // ローディングコンポーネント
-const LoadingSpinner = memo(({ sideMenuWidth, toggleColorMode }) => (
+const LoadingSpinner = memo(({ sideMenuWidth, toggleColorMode }: { sideMenuWidth: string, toggleColorMode: () => void }) => (
   <Flex>
     <MemoizedSideMenu toggleColorMode={toggleColorMode} />
     <Box flex="1" ml={sideMenuWidth} overflowY="auto" maxH="100vh">
@@ -261,7 +278,7 @@ export default function Home() {
       console.error('プロフィール取得エラー:', error);
       toast({
         title: "プロフィールの取得に失敗しました",
-        description: error.message,
+        description: (error as Error).message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -291,7 +308,7 @@ export default function Home() {
     };
 
     // フォーカスイベントで不要な更新が発生しないようにする
-    const handleWindowFocus = (e) => {
+    const handleWindowFocus = (e: FocusEvent) => {
       e.stopPropagation();
     };
 
@@ -305,19 +322,19 @@ export default function Home() {
   }, []);
 
   // 画像アップロードのハンドラーをメモ化
-  const handleImageUpload = useCallback((e) => {
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result.toString());
+        setProfileImage(reader.result?.toString() || "");
       };
       reader.readAsDataURL(file);
     }
   }, []);
 
   // フォーム入力ハンドラーをメモ化
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     // ref も更新
@@ -333,7 +350,7 @@ export default function Home() {
   }, []);
 
   // フォーム送信ハンドラーをメモ化
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsLoading(true);
@@ -365,7 +382,7 @@ export default function Home() {
       console.error('プロフィール更新エラー:', error);
       toast({
         title: "エラーが発生しました",
-        description: error.message,
+        description: (error as Error).message,
         status: "error",
         duration: 5000,
         isClosable: true,

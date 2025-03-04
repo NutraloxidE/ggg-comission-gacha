@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const groupedOrder: GroupedOrder = await req.json();
 
   // groupedOrderの処理を行う
-  const processedGroupOrder = pr  ocessGroupedOrder(groupedOrder);
+  const processedGroupOrder = processGroupedOrder(groupedOrder);
   return NextResponse.json(processedGroupOrder);
 }
 

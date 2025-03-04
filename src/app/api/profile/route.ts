@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ObjectId } from "mongodb";
@@ -39,7 +39,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request) {
+export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -56,10 +56,10 @@ export async function PUT(request) {
     const updatableFields = ["name", "bio", "website", "twitter", "instagram", "image"];
     const updateData = Object.keys(data)
       .filter(key => updatableFields.includes(key))
-      .reduce((obj, key) => {
+      .reduce((obj: Record<string, unknown>, key) => {
         obj[key] = data[key];
         return obj;
-      }, {});
+      }, {} as Record<string, unknown>);
 
     await db.collection("users").updateOne(
       { _id: new ObjectId(userId) },
