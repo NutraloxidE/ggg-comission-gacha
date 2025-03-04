@@ -29,6 +29,8 @@ export const authOptions = {
         session.user.id = user.id;
         // MongoDB ObjectIdをString型に変換
         session.user.sub = user.id;
+        // publicIDをセッションに追加
+        session.user.publicID = user.publicID;
       }
       return session;
     },

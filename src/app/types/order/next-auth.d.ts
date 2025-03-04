@@ -8,6 +8,7 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       id?: string | null;
+      publicID?: string | null;
       sub?: string | null; // subプロパティを追加
     };
   }
@@ -15,6 +16,7 @@ declare module "next-auth" {
   // MongoDBから取得されるユーザーの型
   interface User {
     id: string;
+    publicID: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
