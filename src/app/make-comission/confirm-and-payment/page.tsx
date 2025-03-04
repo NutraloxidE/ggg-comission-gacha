@@ -25,9 +25,10 @@ export default function Home () {
 
   const [groupedOrder, setGroupedOrder] = useState<GroupedOrder | null>(null);
   const { data: session } = useSession(); // 追加
+  const [hasSentOrder, setHasSentOrder] = useState(false); // 追加
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !hasSentOrder) { // 追加
       // URLからgroupedOrderを取得
       const query = new URLSearchParams(window.location.search);
       const groupedOrderString = query.get('groupedOrder');
@@ -39,6 +40,7 @@ export default function Home () {
           // 入力の検証とサニタイズ
           if (validateGroupedOrder(parsedGroupedOrder)) {
             sendGroupedOrder(parsedGroupedOrder);
+            setHasSentOrder(true); // 追加
           } else {
             console.error('Invalid groupedOrder data');
           }
@@ -47,7 +49,7 @@ export default function Home () {
         }
       }
     }
-  }, []);
+  }, [hasSentOrder]); // 追加
 
   const validateGroupedOrder = (data) => {
     // ここでgroupedOrderの検証ロジックを実装

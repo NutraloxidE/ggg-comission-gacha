@@ -24,10 +24,11 @@ export class GroupedOrder {
     this.comissionCuedDate = new Date();
     this.comissionExpireDate = comissionExpireDate || this.calculateExpireDate(14); // 14日後をデフォルトに設定
     this.overallDeadline = overallDeadline;
+  }
 
-    //SingleOrderのIDは、グループID-連番 で設定
-    for (let i = 0; i < orders.length; i++) {
-      orders[i].id = this.orderID + "-" + i;
+  public InitSingleOrderID(): void {
+    for (let i = 0; i < this.orders.length; i++) {
+      this.orders[i].id = this.orderID + "-" + i;
     }
   }
 
@@ -46,5 +47,4 @@ export class GroupedOrder {
     date.setDate(date.getDate() + days);
     return date;
   }
-
 }
