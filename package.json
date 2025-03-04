@@ -21,6 +21,7 @@
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-easy-crop": "^5.4.1",
     "react-icons": "^5.5.0",
     "uuid": "^11.1.0",
     "uuidv7": "^1.0.2"
@@ -30,6 +31,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-easy-crop": "^1.16.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",
