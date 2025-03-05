@@ -4,7 +4,7 @@ import { WORKER_TAKE_PERCENTAGE } from "@/app/config/constants";
 export class GroupedOrder {
   orderID: string; 
   orders: SingleOrder[];
-  clientID?: string;
+  clientPublicUserID?: string;
   orderType: string;
   orderDetails: string;
   totalFeeThatClientPays: number;
@@ -13,6 +13,7 @@ export class GroupedOrder {
   comissionExpireDate: Date;
   overallDeadline: Date;
   didClientPay: boolean = false;
+  randomNum?: string;// 同じオーダーを複数回受け取らないための乱数、それ以外では使用しない
 
   constructor(orders: SingleOrder[], orderType: string, orderDetails: string, overallDeadline: Date, comissionExpireDate?: Date) {
     this.orderID = "NotAssignedYet";// APIでサーバー側で設定

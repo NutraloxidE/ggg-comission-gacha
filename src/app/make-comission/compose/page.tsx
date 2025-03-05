@@ -134,9 +134,11 @@ export default function Home () {
     if (groupedOrder) {
 
       groupedOrder.orderDetails = remarks;
+      const randomNum = Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+      groupedOrder.randomNum = randomNum; // randomNumをgroupedOrderに追加
 
       const groupedOrderString = JSON.stringify(groupedOrder);
-      router.push(`/make-comission/confirm-and-payment?groupedOrder=${encodeURIComponent(groupedOrderString)}`);
+      router.push(`/make-comission/confirm-and-payment?groupedOrder=${encodeURIComponent(groupedOrderString)}&randomNum=${randomNum}`);
     }
   };
 
