@@ -10,6 +10,7 @@ import {
   Button, 
   Input, 
   Text,
+  Checkbox,
   useDisclosure, 
   useToast,
   Box,
@@ -17,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 // アニメーションの定義
 const fadeIn = keyframes`
@@ -27,9 +29,17 @@ const fadeIn = keyframes`
 const PublicIdInitializeModal: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [publicId, setPublicId] = useState('');
+  const [isAgreed, setIsAgreed] = useState(false);
   const toast = useToast();
+  const { status } = useSession();
 
   useEffect(() => {
+    // ログインしていない場合はモーダルを表示しない
+    if (status !== 'authenticated') {
+      return;
+    }
+
+    // Public IDの設定状況を確認
     const checkPublicId = async () => {
       try {
         const response = await axios.get('/api/public-id');
@@ -43,11 +53,13 @@ const PublicIdInitializeModal: React.FC = () => {
     };
 
     checkPublicId();
-  }, [onOpen]);
+  }, [status, onOpen]);
 
   const handleInitialize = async () => {
     try {
-      const response = await axios.post('/api/public-id', { publicID: publicId });
+      // Public IDのポストリクエストをAPIに送信
+      await axios.post('/api/public-id', { publicID: publicId });
+
       toast({
         title: "Public IDが設定されました。",
         status: "success",
@@ -55,14 +67,24 @@ const PublicIdInitializeModal: React.FC = () => {
         isClosable: true,
       });
       onClose();
-    } catch (error) {
-      toast({
-        title: "Public IDの設定に失敗しました。",
-        description: error.response?.data?.error || "不明なエラーが発生しました。",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+    } catch (error : unknown) {
+      if (axios.isAxiosError(error)) {
+        toast({
+          title: "Public IDの設定に失敗しました。",
+          description: error.response?.data?.error || "不明なエラーが発生しました。",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Public IDの設定に失敗しました。",
+          description: "不明なエラーが発生しました。",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -80,7 +102,8 @@ const PublicIdInitializeModal: React.FC = () => {
               <Text fontSize="2xl" fontWeight="bold" mb={5}>ようこそ！</Text>
             </Center>
             <Text mb={1}>はじめに、Public IDを設定してください。</Text>
-            <Text mb={8}>(設定しないとバグります)</Text>
+            <Text mb={1}>(設定しないとバグります)</Text>
+            <Text mb={8} fontSize="sm" color="gray.500">※一度設定したら変更できません。</Text>
             <Text mb={4}>Public IDは以下の条件を満たす必要があります：</Text>
             <Text mb={8}>
               - アーティスト名が含まれている<br />
@@ -95,12 +118,25 @@ const PublicIdInitializeModal: React.FC = () => {
               size="lg"
               borderColor="teal.500"
               focusBorderColor="green.500"
-              mb={0}
+              mb={4}
             />
+            <Checkbox 
+              isChecked={isAgreed} 
+              onChange={(e) => setIsAgreed(e.target.checked)}
+            >
+              利用規約とプライバシーポリシーに同意します
+            </Checkbox>
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" onClick={handleInitialize} size="lg" w="full">
+          <Button 
+            colorScheme="blue" 
+            onClick={handleInitialize} 
+            size="lg" 
+            w="full" 
+            mb={5}
+            isDisabled={!isAgreed}
+          >
             はじめる
           </Button>
         </ModalFooter>

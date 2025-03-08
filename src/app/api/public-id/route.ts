@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
 
   const { publicID } = await req.json();
 
+  // publicIDが文字列かどうかチェック
+  if (typeof publicID !== "string") {
+    return NextResponse.json({ error: "publicIDは文字列である必要があります" }, { status: 400 });
+  }
+
   // publicIDのフォーマットを検証
   const publicIDPattern = /^[A-Za-z0-9.-]*$/;
   if (!publicIDPattern.test(publicID) || !/\d/.test(publicID)) {
