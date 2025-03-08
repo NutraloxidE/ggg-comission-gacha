@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { 
+  Modal, 
+  ModalOverlay, 
+  ModalContent, 
+  ModalHeader, 
+  ModalFooter, 
+  ModalBody, 
+  ModalCloseButton, 
+  Button, 
+  Input, 
+  useDisclosure 
+} from "@chakra-ui/react";
 
-interface PublicIdInitializeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (publicID: string, name: string) => void;
-}
+const PublicIdInitializeModal: React.FC = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [publicId, setPublicId] = useState('');
+  const testvariable = true; // ここでtestvariableを定義
 
-const PublicIdInitializeModal: React.FC<PublicIdInitializeModalProps> = ({ isOpen, onClose, onSave }) => {
-  const [publicID, setPublicID] = useState('');
-  const [name, setName] = useState('');
+  useEffect(() => {
+    if (testvariable) {
+      onOpen();
+    }
+  }, [testvariable, onOpen]);
 
-  const handleSave = () => {
-    onSave(publicID, name);
+  const handleInitialize = () => {
+    // 初期化処理をここに追加
+    console.log('Public ID:', publicId);
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="md">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Public IDと名前を入力してください</ModalHeader>
+        <ModalHeader>Public IDの初期化</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="publicID" isRequired>
-            <FormLabel>Public ID</FormLabel>
-            <Input value={publicID} onChange={(e) => setPublicID(e.target.value)} />
-          </FormControl>
-          <FormControl id="name" isRequired mt={4}>
-            <FormLabel>名前</FormLabel>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </FormControl>
+          <Input 
+            placeholder="新しいPublic IDを入力してください" 
+            value={publicId} 
+            onChange={(e) => setPublicId(e.target.value)} 
+          />
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSave}>
-            保存
+          <Button colorScheme="gray" mr={3} onClick={onClose}>
+            キャンセル
+          </Button>
+          <Button colorScheme="blue" onClick={handleInitialize}>
+            初期化
           </Button>
         </ModalFooter>
       </ModalContent>

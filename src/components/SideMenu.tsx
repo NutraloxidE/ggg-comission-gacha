@@ -7,6 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { FaSignInAlt, FaHome, FaPen, FaBell, FaEnvelope, FaLightbulb, FaClipboardList, FaTasks, FaSignOutAlt } from "react-icons/fa";
 import { useSession, signOut } from "next-auth/react";
+import PublicIdInitializeModal from './PublicIdInitializeModal';
 
 interface SideMenuProps {
   toggleColorMode: () => void;
@@ -50,6 +51,8 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
   };
 
   return (
+    
+
     <Box
       width={isLargerThanThatSize ? "200px" : "75px"}
       height="100vh"
@@ -58,7 +61,9 @@ export default function SideMenu({ toggleColorMode }: SideMenuProps) {
       padding={4}
       boxShadow="md"
       position="fixed"
-    >
+    > 
+      <PublicIdInitializeModal />
+
       <VStack align="start" spacing={6} >
         <Link onClick={() => router.push('/')} {...linkProps}>
           <Icon as={FaHome} mr={2} boxSize={IconSize} />
