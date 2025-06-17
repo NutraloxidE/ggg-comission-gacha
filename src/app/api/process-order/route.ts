@@ -64,8 +64,9 @@ const processGroupedOrder = (groupedOrder: GroupedOrder, collection: any): Group
   groupedOrder.didClientPay = false; // 改変を無視
   groupedOrder.InitSingleOrderID(); // orderIDが設定された状態で再度設定
 
-  // TODO:決済が処理されるまで、processedGroupedOrderを一時コレクションに保存する (MongoDB) (PaymentPendingGroupedOrders)
+  // TODO:決済が処理されるまで、processedGroupedOrderを一時コレクションに保存する (MongoDB) (PaymentPendingGroupedOrders) (<-おそらくunpayed-commsコレクションの事)
   // 決済が完了したら、コレクションから移動し、依頼リストのコレクションに保存する (ここでは行わない)
+  // 独立した決済サービス作って、このサービスと連携すると良いかもしれない
   collection.insertOne(groupedOrder).catch(err => {
     console.error('Failed to insert document', err);
   });
