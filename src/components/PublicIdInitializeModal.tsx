@@ -124,7 +124,26 @@ const PublicIdInitializeModal: React.FC = () => {
               isChecked={isAgreed} 
               onChange={(e) => setIsAgreed(e.target.checked)}
             >
-              利用規約とプライバシーポリシーに同意します
+              <span>
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#3182ce", textDecoration: "underline" }}
+                >
+                  利用規約
+                </a>
+                と
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#3182ce", textDecoration: "underline" }}
+                >
+                  プライバシーポリシー
+                </a>
+                に同意します
+              </span>
             </Checkbox>
           </Box>
         </ModalBody>
